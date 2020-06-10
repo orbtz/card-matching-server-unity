@@ -1,12 +1,14 @@
 const express = require("express");
+const app = express();
+
+const server = require("http").createServer(app);
+const WebSocket = require('ws');
+
 const path = require("path");
 const cors = require("cors");
+app.use(cors());
 
-const app = express();
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-
-// app.use(cors());
+const wss = new WebSocket.Server({ server });
 
 app.use(express.static(path.join(__dirname, "public")))
 app.set("views", path.join(__dirname, "public"));
@@ -17,19 +19,34 @@ app.use("/", (req, res) => {
   res.render("index.html");
 });
 
-let messages = [];
+let leaderboard = []; //Dummie data
 
-io.on("connection", socket => {
-  console.log(`Socket Conectado: ${socket.id}`);
+wss.on('connection', function(ws){
 
-  socket.on("PLAYER_SUBMIT", data => {
-    messages.push(data);
+  ws.on('message', function (data) {
 
-    socket.emit("PLAYER_SUBMIT_RESPONSE", messages);
+    // data = JSON.parse(data);
+    console.log(data);
+
+    var player = JSON.stringify({
+      name: "Fábio",
+      points: 5
+    });
+
+    leaderboard.push(player);
+
+    ws.send(JSON.stringify({
+      info: "Recebido pelo Server!",
+      players: leaderboard
+    }));
   });
 
+  ws.on('close', function(){
+    //TODO
+  });
 });
 
-// server.listen(process.env.PORT || 3000);
-// server.listen(3000);
-server.listen(process.env.PORT || 3000);
+
+server.listen(process.env.PORT || 3000, function(){
+  console.log('Server na Porta 3000');
+});
