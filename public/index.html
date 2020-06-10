@@ -16,8 +16,8 @@
     <script>
         $(function () {
 
-            // const socket = new WebSocket("wss://card-matching-server.herokuapp.com"); //For the server online
-            const socket = new WebSocket("ws://localhost:3000"); //For local testing
+            const socket = new WebSocket("wss://card-matching-server.herokuapp.com"); //For the server online
+            // const socket = new WebSocket("ws://localhost:3000"); //For local testing
 
             socket.onmessage = function (event) {
                 // socket.send("Hello from Server");
