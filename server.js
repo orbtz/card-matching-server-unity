@@ -23,18 +23,15 @@ let leaderboard = []; //Dummie data
 
 wss.on('connection', function(ws){
 
-  ws.on('message', function (data) {
+  ws.on('message', function (message) {
 
-    // data = JSON.parse(data);
-    console.log(data);
+    parsedData = JSON.parse(message);
+    console.log(parsedData);
 
-    var player = JSON.stringify({
-      name: "Fábio",
-      points: 5
-    });
-
-    leaderboard.push(player);
-
+    if (parsedData.type == 'LEADERBOARD_SUBMIT'){
+      leaderboard.push(parsedData.value);
+    }
+    
     ws.send(JSON.stringify({
       info: "Recebido pelo Server!",
       players: leaderboard
