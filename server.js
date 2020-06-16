@@ -19,30 +19,53 @@ app.use("/", (req, res) => {
   res.render("index.html");
 });
 
-let leaderboard = []; //Dummie data
+let leaderboard = []; //Main Data
+
+//Function that will sort the leaderboard based on each Score
+//0 = Best score
+const sortLeaderboard = function () {
+  // Getting the set length
+  let length = leaderboard.length;
+
+  // Main loop to iterate over all set elements
+  for (var i = 0; i < length; i++) {
+    // Min is the part that we are not going to loop again
+    var min = i;
+    for (var j = i + 1; j < length; j++) {
+      // Executing statement comparison - If has less seconds OR has equal seconds and less moves
+      if ( ( leaderboard[min].score > leaderboard[j].score ) ) {
+        // Updating our current min index to iterate
+        min = j;
+      }
+    }
+
+    // Swaping values
+    if (min !== i) {
+      let temp = leaderboard[i];
+      leaderboard[i] = leaderboard[min];
+      leaderboard[min] = temp;
+    }
+  }
+};
 
 wss.on('connection', function(ws){
-
   ws.on('message', function (message) {
 
     parsedData = JSON.parse(message);
-    console.log(parsedData);
+    parsedValue = JSON.parse(parsedData.value);
 
     if (parsedData.type == 'LEADERBOARD_SUBMIT'){
-      leaderboard.push(parsedData.value);
+      leaderboard.push(parsedValue);
+      sortLeaderboard();
+
+      // console.log(leaderboard);
     }
-    
-    ws.send(JSON.stringify({
-      info: "Recebido pelo Server!",
-      players: leaderboard
-    }));
   });
 
   ws.on('close', function(){
     //TODO
   });
 });
-
 
 server.listen(process.env.PORT || 3000, function(){
   console.log('Server na Porta 3000');
