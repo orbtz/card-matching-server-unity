@@ -60,6 +60,12 @@ wss.on('connection', function(ws){
 
       // console.log(leaderboard);
     }
+
+    if (parsedData.type == 'LEADERBOARD_GET'){
+      console.log("Get Leaderboard");
+      return leaderboard;
+    }
+
   });
 
   ws.on('close', function(){
