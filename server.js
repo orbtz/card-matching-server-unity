@@ -49,21 +49,32 @@ const sortLeaderboard = function () {
 };
 
 wss.on('connection', function(ws){
+  console.log("CLIENT CONNECTED: " + ws);
+
   ws.on('message', function (message) {
 
     parsedData = JSON.parse(message);
-    parsedValue = JSON.parse(parsedData.value);
 
     if (parsedData.type == 'LEADERBOARD_SUBMIT'){
+      parsedValue = JSON.parse(parsedData.value);
       leaderboard.push(parsedValue);
       sortLeaderboard();
 
-      // console.log(leaderboard);
+      console.log(leaderboard);
     }
 
     if (parsedData.type == 'LEADERBOARD_GET'){
       console.log("Get Leaderboard");
-      return leaderboard;
+
+      ws.send(JSON.stringify({
+        type: "LEADERBOARD_GET",
+        value: leaderboard
+      }));
+
+      console.log(JSON.stringify({
+        type: "LEADERBOARD_GET",
+        value: leaderboard
+      }));
     }
 
   });
