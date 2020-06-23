@@ -19,7 +19,7 @@ app.use("/", (req, res) => {
   res.render("index.html");
 });
 
-let leaderboard = []; //Main Data
+let leaderboard = [];
 
 //Function that will sort the leaderboard based on each Score
 //0 = Best score
@@ -78,12 +78,8 @@ wss.on('connection', function(ws){
     }
 
   });
-
-  ws.on('close', function(){
-    //TODO
-  });
 });
 
 server.listen(process.env.PORT || 3000, function(){
-  console.log('Server na Porta 3000');
+  console.log('Port: 3000');
 });
